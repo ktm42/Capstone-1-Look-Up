@@ -1,12 +1,48 @@
 nav {
+    color: black;
+    font-family: Nulshock;
+    text-align: left;
+}
+
+#iss_image {
     background-image: url(https://images.unsplash.com/photo-1614314007212-0257d6e2f7d8?q=80&w=3774&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
     border: 1px solid black;
     height: 600px;
     background-size: cover;
-    background-position: center;
-    color: white;
+    background-position: center; 
 }
 
-.nav-item {
-    text-align: right;
+body {
+    background-color: rgb(180, 165, 165);
+}
+
+h1 {
+    color: rgb(180, 165, 165);
+    font-family: Nulshock;
+    font-size: 75px;
+    text-align: center;
+}
+
+.display-1 {
+    font-family: Nulshock;
+    color: rgb(60, 65, 92);
+    font-size: 50px;
+    text-align: center;
+}
+
+.lead {
+    font-family: Nulshock;
+    font-size: 25px;
+    color: rgb(48, 27, 63);
+}
+
+.form_label {
+    font-size: 15px;
+    font-family: Nulshock;
+    color: rgb(48, 27, 63)
+}
+
+.btn {
+    font-family: Nulshock;
+    color: rgb(60, 65, 92)
 }

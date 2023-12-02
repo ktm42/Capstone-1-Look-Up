@@ -7,25 +7,28 @@
     <link rel="stylesheet" type="text/css" href="../static/styles/styles.css">
 </head>
 <body>
-    <nav>
-        <div class = 'container'>
-            <a href = '/' class = 'navbar-brand text-light'>Look Up</a>
-            <ul class = 'nav navbar-nav flex-row-right'>
+    <div id = 'iss_image'>   
+        <nav class = 'menu'>   
+            <ul class = 'links'>
                 {% if session['user_id'] %}
-                <li class = 'nav-item'>
-                    <a class = 'nav-link pre-3 text-light' href = 'logout'>Log out</a>
-                </li>
-                {% else %}
-                <li class = 'nav-item'>
-                    <a class = 'nav-link pre-3 text-light' href = '/login'>Login</a>
-                </li>
-                <li class = 'nav-item'>
-                    <a class = 'nav-link text-light' href = '/register'>Create Account</a>
-                </li>
+                    <li>
+                        <a href = '/logout'>Log out</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a href = '/login'>Login</a>
+                    </li>
+                    <li>
+                        <a href = '/register'>Create Account</a>
+                    </li>
                 {% endif %}
-            </ul>          
-        </div>
-    </nav>
+            </ul>   
+        </nav>  
+        <div>
+            <h1>Look UP</h1>
+        </div>  
+        </nav>       
+    </div>
     <div class = 'container' style = 'margin-top: 2 em'>
         {% for category_msg in get_flashed_messages(with_categories = True) %}
         <div class = 'alert alert {{ category }}'>{{ msg }}</div>

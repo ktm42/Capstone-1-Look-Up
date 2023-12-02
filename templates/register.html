@@ -4,18 +4,22 @@
 <h1 class = 'display-1'>Create Account</h1>
 <p class = 'lead'>Sign up below to know when to turn your gaze skyward</p>
 
-<form method = 'POST'>
-    {{ form.hidden_tag }}
-    {% for field in form
-        if field.widget.input_type != 'hidden' %}
-        <p>
-            {{ field.label }}
-            {{ field(class_ = 'form-control') }}
-            {% for error in field.errors %}
-            <span class = 'form-text text-danger'></span>
+<form name = 'register' method = 'POST'>
+    <div class = 'form_container'>
+        <div class = 'form_group'>
+            {{ form.hidden_tag }}
+            {% for field in form
+            if field.widget.input_type != 'hidden' %}
+            <p>
+                {{ field.label(class_ = 'form_label') }}
+                {{ field(class_ = 'form_field') }}
+                {% for error in field.errors %}
+                    <span class = 'form_error'>{{ error }}</span>
+                {% endfor %}
+            </p>
             {% endfor %}
-        </p>
-    {% endfor %}
-        <button type = 'submit'>Register</button>
+            </div>
+        <button claa_ = 'btn' type = 'submit'>Register</button>
+    </div>
 </form>
 {% endblock %}

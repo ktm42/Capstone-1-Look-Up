@@ -48,8 +48,8 @@ class Coordinates(db.Model):
     __tablename__='coordinates'
 
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    lng = db.Column(db.Integer, nullable = False)
-    lat = db.Column(db.Integer, nullable = False)
+    latitude = db.Column(db.Integer, nullable = False)
+    longitude = db.Column(db.Integer, nullable = False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', backref = 'coordinates')
 

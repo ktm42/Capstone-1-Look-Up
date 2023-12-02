@@ -1,18 +1,18 @@
 import requests, smtplib, time
 from datetime import datetime
 
-MY_EMAIL = #pull this from form data
-MY_Password = #figure out where to pull this
-MY_LAT = #pull this from API response
-MY_LONG = #pull this from API response
+# MY_EMAIL = #pull this from form data
+# MY_Password = #figure out where to pull this
+MY_LAT = lat
+MY_LONG = lon
 
 
 def find_coords():
     url = "https://us1.locationiq.com/v1/search"
 
     data = {
-        'key': pk.d65b852970810a8fd9681f1a3acbd0c4
-        'q': {address}
+        'key': pk.d65b852970810a8fd9681f1a3acbd0c4,
+        'q': request.form.get('address'),
         'format': 'json'
     }
 
@@ -53,15 +53,15 @@ def is_night():
     if time_now >= sunset or time_now <= sunrise:
         return True
 
-while True:
-    time.sleep(60)
-    if is_iss_overheard() and is_night():
-        connection = smtplib.SMTP('smtp.gmail.com')
-        connection.starttls()
-        connection.login(MY_EMAIL, MY_PASSWORD)
-        connection.sendmail(
-            from_addr=MY_EMAIL,
-            to_addr=MY_EMAIL,
-            msg="Subject: Go Outside/n/nLook up to see the ISS passing by."
-        )
+# while True:
+#     time.sleep(60)
+#     if is_iss_overheard() and is_night():
+#         connection = smtplib.SMTP('smtp.gmail.com')
+#         connection.starttls()
+#         connection.login(MY_EMAIL, MY_PASSWORD)
+#         connection.sendmail(
+#             from_addr=MY_EMAIL,
+#             to_addr=MY_EMAIL,
+#             msg="Subject: Go Outside/n/nLook up to see the ISS passing by."
+#         )
 

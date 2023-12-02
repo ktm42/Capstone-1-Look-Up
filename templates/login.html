@@ -4,18 +4,23 @@
 <h1 class = 'display-1'>Welcome Back</h1>
 <p class = 'lead'>Login below to know when to turn your gaze skyward</p>
 
-<form method = 'POST'>
-    {{ form.hidden_tag }}
-    {% for field in form
-        if field.widget.input_type != 'hidden' %}
-        <p>
-            {{ field.label }}
-            {{ field }}
-            {% for error in field.errors %}
-            <span class = 'form-text text-danger'></span>
+<form name = 'login' method = 'POST'>
+    <div class ='form_container'>
+        <div class = 'form_group'>
+            {{ form.hidden_tag }}
+            {% for field in form
+            if field.widget.input_type != 'hidden' %}
+            <p>
+                {{ field.label(class_ = 'form_label') }}
+                {{ field(class_ = 'form_field') }}
+
+                {% for error in field.errors %}
+                    <span class = 'form_error'>{{ error }}</span>
+                {% endfor %}
+            </p>
             {% endfor %}
-        </p>
-    {% endfor %}
-        <button type = 'submit'>Login</button>
+            </div>
+        <button class_ = 'btn' type = 'submit'>Login</button>
+    </div>
 </form>
 {% endblock %}
