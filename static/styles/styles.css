@@ -1,0 +1,12 @@
+nav {
+    background-image: url(https://images.unsplash.com/photo-1614314007212-0257d6e2f7d8?q=80&w=3774&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
+    border: 1px solid black;
+    height: 600px;
+    background-size: cover;
+    background-position: center;
+    color: white;
+}
+
+.nav-item {
+    text-align: right;
+}
