@@ -12,16 +12,18 @@ def find_coords():
 
     data = {
         'key': pk.d65b852970810a8fd9681f1a3acbd0c4,
-        'q': request.form.get('address'),
+        'q': form.password.data,
         'format': 'json'
     }
 
-    response = requests.get(url, param=data)
+    response = requests.get(url, params=data)
     response.raise_for_status()
     data = response.json
 
     lat = data['0']['lat']
     lon = data['0']['lon']
+
+    return lat, lon
 
 
 def is_iss_overheard():
@@ -45,6 +47,7 @@ def is_night():
     response = request.get('https://api.sunrise-sunset.org/json', params=parameters)
     reponse.raise_for_status()
     data = response.jason()
+
     sunrise = int(data['results']['sunrise'].split('T')[1].split(':')[0])
     sunset = int(data['results']['sunset'].split('T').split(':')[0])
 
@@ -52,6 +55,7 @@ def is_night():
 
     if time_now >= sunset or time_now <= sunrise:
         return True
+    return False
 
 # while True:
 #     time.sleep(60)

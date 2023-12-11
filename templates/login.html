@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1 class = 'display-1'>Welcome Back</h1>
-<p class = 'lead'>Login below to know when to turn your gaze skyward</p>
+    <h1 class = 'display-1'>Welcome Back</h1>
+    <p class = 'lead'>Log in below to know when to turn your gaze skyward</p>
 
-<form name = 'login' method = 'POST'>
-    <div class ='form_container'>
-        <div class = 'form_group'>
-            {{ form.hidden_tag }}
+    <form name = 'login' method = 'POST' action = '/login'>
+        <div class ='form_container'>
+            {{ form.hidden_tag() }}
             {% for field in form
             if field.widget.input_type != 'hidden' %}
             <p>
@@ -19,8 +18,16 @@
                 {% endfor %}
             </p>
             {% endfor %}
-            </div>
-        <button class_ = 'btn' type = 'submit'>Login</button>
-    </div>
-</form>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class = 'flashes'>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </form>
 {% endblock %}

@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1 class = 'display-1'>Create Account</h1>
-<p class = 'lead'>Sign up below to know when to turn your gaze skyward</p>
+    <h1 class = 'display-1'>Create Account</h1>
+    <p class = 'lead'>Sign up below to know when to turn your gaze skyward</p>
 
-<form name = 'register' method = 'POST'>
-    <div class = 'form_container'>
-        <div class = 'form_group'>
-            {{ form.hidden_tag }}
+    <form name = 'register' method = 'POST' action = '/register'>
+        <div class = 'form_container'>
+            {{ form.hidden_tag() }}
             {% for field in form
             if field.widget.input_type != 'hidden' %}
             <p>
@@ -18,8 +17,16 @@
                 {% endfor %}
             </p>
             {% endfor %}
-            </div>
-        <button claa_ = 'btn' type = 'submit'>Register</button>
-    </div>
-</form>
+
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class = 'flashes'>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}        
+        {% endwith %}
+        </div>
+    </form>
 {% endblock %}

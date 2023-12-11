@@ -1,71 +1,102 @@
 import os
 
-from flask import Flask, render_template, redirect, session, flash
+from flask import Flask, render_template, redirect, url_for, session, flash, g
 from forms import LoginForm, RegForm
-#from models import db, connect_db, Register, User, Coordinates
-#from sqlalchemy.exe import IntegrityError
+from models import db, bcrypt, Register, User, Coordinates
+from sqlalchemy.exc import IntegrityError
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 app.debug = True
 
-app.config['SQLALCHEMY_DATABASE_URI'] = (
-    os.environ.get('DATABASE_URL', 'postgresql:///lookup'))
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI', 'postgresql:///lookup')
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "shhhdonttell")
 
-#connect_db(app)
+db.init_app(app)
+bcrypt.init_app(app)
 
-# @app.before_request
-# def add_user_to_g():
+from models import connect_db
 
-#     if CURR_USER_KEY in session:
-#         g.user = User.query.get(session[CURR_USER_KEY])
+connect_db(app)
 
-#     else:
-#         g.user = None
+with app.app_context():
+    db.create_all()
 
-# def do_login(user):
-#     """Log in user"""
+CURR_USER_KEY = 'user_id'
 
-#     session[CURR_USER_KEY] = user.id 
+@app.before_request
+def add_user_to_g():
+    """If logged in, add the current user to Flask global"""
 
-# def do_logout():
-#     """Logs out user"""
+    if CURR_USER_KEY in session:
+        g.user = User.query.get(session[CURR_USER_KEY])
 
-#     if CURR_USER_KEY in session:
-#         del session[CURR_USER_KEY]
+    else:
+        g.user = None
+
+def do_login(user):
+    """Logs in user"""
+
+    session[CURR_USER_KEY] = user.id 
+
+def do_logout():
+    """Logs out user"""
+
+    if CURR_USER_KEY in session:
+        del session[CURR_USER_KEY]
 
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('base.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    """Shows form for user to register and handles submission"""
+    """Shows form for user to register, handles submission, adds info to database and redirect to login. If the form is not valid, present form.  If username already exists, flash message and re-present form"""
+
+
+    if CURR_USER_KEY in session:
+        del session[CURR_USER_KEY]
 
     form = RegForm()
        
     if form.validate_on_submit():
+        print('Form is valid')
         try:
-            user = User.register(
+            print('Before adding user to db')
+            user = Register.register(
+                first_name = form.first_name.data,
+                last_name = form.last_name.data,
+                address = form.username.data,
                 username = form.username.data,
                 password = form.password.data,                
             ) 
-        
+
+            print('User:', user)
+            db.session.add(user)
+
+            print('Before committing to the database')
             db.session.commit()
+
+            flash('Success! Please log in.')
+
+            print('Before redirect to login')
+            do_login(user)
+            return redirect('/login')
     
         except IntegrityError as e:
-            flash(f'Username already exists')
+            db.session.rollback()
+            flash(f'Error: {e}')
+
+            print('Retrun the registration form on IntegrityError')
             return render_template('register.html', form=form)
 
-        do_login(user)
-
-        return redirect('/')
     else:
+        print('Form is invalid')
+        print(form.errors)
         return render_template('register.html', form=form)
     
 @app.route('/login', methods=['GET', 'POST'])
@@ -79,20 +110,39 @@ def login():
         
         if user:
             do_login(user)
-            flash(f'Hi {user.username}!')
+            flash(f'Hi {user.username}, welcome back!')
             return redirect('/')
         else:
             flash(f'Invalid username/password. Please try again.')
+            print(form.errors)
     
     return render_template('login.html', form=form)
 
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 def logout():
-    """Handels user logout"""
+    """Handles user logout"""
 
     do_logout()
 
     flash(f'Logout successful')
     return redirect('/login')
+
+
+@app.route('/delete', methods=['POST'])
+def delete_user():
+    """Deletes the user"""
+
+    if not g.user:
+        flash('Unauthorized access')
+        return redirect('/')
+
+    do_logout()
+
+    db.session.delete(g.user)
+    db.session.commit()
+
+    return redirect('/register')
+
+
 
 #@app.route('/location') #need a way to delete out or edit a location and also a way to delete the user completely
