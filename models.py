@@ -25,13 +25,16 @@ class Register(db.Model):
         
         hashed = bcrypt.generate_password_hash(password)
         hashed_utf8 = hashed.decode('utf8')
+
+        registration = Register(first_name=first_name, last_name=last_name, address=address, username=username, password=hashed_utf8)
+        db.session.add(registration)
+        db.session.commit()
        
-        return cls(
-            first_name = first_name,
-            last_name = last_name,
-            address = address,
-            username = username, 
-            password = hashed_utf8)
+        user = User(username=username, password=hashed_utf8)
+        db.session.add(user)
+        db.session.commit()      
+
+        return user
 
 class User(db.Model):
     __tablename__= 'users'
@@ -39,23 +42,34 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key = True, nullable = False, unique = True, autoincrement = True) 
     username = db.Column(db.Text, nullable = False, unique = True)
     password = db.Column(db.Text, nullable = False)
-
+  
     @classmethod
     def authenticate(cls, username, password):
         """Validates user exists and password is correct. Returns user if valid; else returns false"""
 
         u = cls.query.filter_by(username=username).first()
-        if u and bcrypt.check_password_hash(u.password, password):
-            return u
+        if u:
+            print(f'Stored hashed password: {u.password}')
+            if bcrypt.check_password_hash(u.password, password):
+                print("Authentication successful")
+                return u
+            else:
+                print("Password does not match")
         else:
-            return False
+            print('User not found')
+        return False
 
 class Coordinates(db.Model):
     __tablename__='coordinates'
 
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    latitude = db.Column(db.Integer, nullable = False)
-    longitude = db.Column(db.Integer, nullable = False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    latitude = db.Column(db.Float, nullable = False)
+    longitude = db.Column(db.Float, nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
     user = db.relationship('User', backref = 'coordinates')
 
+    @classmethod
+    def log_coords(cls, latitude, longitude, user):
+         coordinates = Coordinates(latitude=latitude, longitude=longitude, user=user)
+         db.session.add(coordinates)
+         db.session.commit()

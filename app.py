@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, render_template, redirect, url_for, session, flash, g
 from forms import LoginForm, RegForm
+from main import find_coords, is_iss_overhead, is_night
 from models import db, bcrypt, Register, User, Coordinates
 from sqlalchemy.exc import IntegrityError
 
@@ -21,6 +22,9 @@ bcrypt.init_app(app)
 from models import connect_db
 
 connect_db(app)
+
+with app.app_context():
+    db.drop_all()
 
 with app.app_context():
     db.create_all()
@@ -56,7 +60,8 @@ def home():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     """Shows form for user to register, handles submission, adds info to database and redirect to login. If the form is not valid, present form.  If username already exists, flash message and re-present form"""
-
+    
+    global MY_LAT, MY_LON
 
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
@@ -65,8 +70,10 @@ def register():
        
     if form.validate_on_submit():
         print('Form is valid')
+
         try:
             print('Before adding user to db')
+
             user = Register.register(
                 first_name = form.first_name.data,
                 last_name = form.last_name.data,
@@ -77,14 +84,15 @@ def register():
 
             print('User:', user)
             db.session.add(user)
-
-            print('Before committing to the database')
             db.session.commit()
-
+        
             flash('Success! Please log in.')
 
             print('Before redirect to login')
             do_login(user)
+
+            find_coords(form.address.data, user)
+         
             return redirect('/login')
     
         except IntegrityError as e:
@@ -98,7 +106,7 @@ def register():
         print('Form is invalid')
         print(form.errors)
         return render_template('register.html', form=form)
-    
+      
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """Handles login"""
@@ -145,4 +153,9 @@ def delete_user():
 
 
 
-#@app.route('/location') #need a way to delete out or edit a location and also a way to delete the user completely
+@app.route('/location', methods=['GET', 'POST'])
+def go_outside():
+    """pull coordinates from db and check if user should go outside and look up"""
+
+    is_iss_overhead()
+    is_night()

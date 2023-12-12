@@ -1,20 +1,17 @@
-import requests, smtplib, time
+import requests
 from datetime import datetime
-from models import Coordinates
 
-# MY_EMAIL = #pull this from form data
-# MY_Password = #figure out where to pull this
 MY_LAT = None
 MY_LON = None
 
-def find_coords(address, user):
+def find_coords():
     global MY_LAT, MY_LON
 
     url = "https://us1.locationiq.com/v1/search"
 
     data = {
-        'key': 'pk.d65b852970810a8fd9681f1a3acbd0c4',
-        'q': address,
+        'key': 'pk.d65b852970810a8fd9681f1a3acbd0c4',  # Replace with your API key
+        'q': '1333 Woodland DR SW Rochester MN 55902',    # Replace with the address you want to search
         'format': 'json'
     }
 
@@ -25,24 +22,18 @@ def find_coords(address, user):
     MY_LAT = float(data[0]['lat'])
     MY_LON = float(data[0]['lon'])
 
-    print('find_coords executed successfully!')
-    print(MY_LAT, MY_LON)
-     
-    coordinates = Coordinates.log_coords(
-        latitude=MY_LAT,
-        longitude= MY_LON,
-        user=user
-    )
+    return MY_LAT, MY_LON
 
 def is_iss_overhead():
     response = requests.get(url="https://api.wheretheiss.at/v1/satellites/25544")
+    print(f"iss overhead response = {response.text}")
     response.raise_for_status()
     data = response.json()
 
     iss_longitude = float(data['longitude'])
     iss_latitude = float(data['latitude'])
 
-    if MY_LAT -5 <= iss_latitude and MY_LONG - 5 <= iss_longitude <= + 5:
+    if MY_LAT -5 <= iss_latitude and MY_LON - 5 <= iss_longitude <= + 5:
         return True
 
 def is_night():
@@ -53,7 +44,8 @@ def is_night():
     }
 
     response = requests.get('https://api.sunrise-sunset.org/json', params=parameters)
-    reponse.raise_for_status()
+    print(f"is night response = {response.text}")
+    response.raise_for_status()
     data = response.json()
 
     sunrise = data['results']['sunrise']
@@ -64,19 +56,13 @@ def is_night():
 
     time_now = datetime.now().hour
 
-    if time_now >= sunset or time_now <= sunrise:
+    if time_now >= time_sunset or time_now <= time_sunrise:
         return True
     return False
 
-# while True:
-#     time.sleep(60)
-#     if is_iss_overheard() and is_night():
-#         connection = smtplib.SMTP('smtp.gmail.com')
-#         connection.starttls()
-#         connection.login(MY_EMAIL, MY_PASSWORD)
-#         connection.sendmail(
-#             from_addr=MY_EMAIL,
-#             to_addr=MY_EMAIL,
-#             msg="Subject: Go Outside/n/nLook up to see the ISS passing by."
-#         )
+print('Coordinates:', find_coords())
+
+print('ISS overhead:', is_iss_overhead())
+
+print('Is night:', is_night())
 
