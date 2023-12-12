@@ -8,6 +8,7 @@ def connect_db(app):
     """Connects to database"""
 
     db.app = app
+    db.init_app(app)
 
 class Register(db.Model):
     __tablename__ = 'registration'

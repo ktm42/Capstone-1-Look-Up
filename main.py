@@ -34,7 +34,7 @@ def find_coords(address, user):
         user=user
     )
 
-def is_iss_overhead():
+def is_iss_overhead(lat, lon):
     response = requests.get(url="https://api.wheretheiss.at/v1/satellites/25544")
     response.raise_for_status()
     data = response.json()
@@ -42,32 +42,29 @@ def is_iss_overhead():
     iss_longitude = float(data['longitude'])
     iss_latitude = float(data['latitude'])
 
-    if MY_LAT -5 <= iss_latitude and MY_LONG - 5 <= iss_longitude <= + 5:
-        return True
+    if lat -5 <= iss_latitude and lon - 5 <= iss_longitude <= + 5:
+        parameters={
+            "lat": lat,
+            "lon": lon,
+            "formatted":0
+        }
 
-def is_night():
-    parameters={
-        "lat": MY_LAT,
-        "lon": MY_LON,
-        "formatted":0
-    }
+        response = requests.get('https://api.sunrise-sunset.org/json', params=parameters)
+        response.raise_for_status()
+        data = response.json()
 
-    response = requests.get('https://api.sunrise-sunset.org/json', params=parameters)
-    reponse.raise_for_status()
-    data = response.json()
+        sunrise = data['results']['sunrise']
+        sunset = data['results']['sunset']
 
-    sunrise = data['results']['sunrise']
-    sunset = data['results']['sunset']
+        time_sunrise = int(sunrise.split('T')[1].split(':')[0])
+        time_sunset = int(sunset.split('T')[1].split(':')[0])
 
-    time_sunrise = int(sunrise.split('T')[1].split(':')[0])
-    time_sunset = int(sunset.split('T')[1].split(':')[0])
+        time_now = datetime.now().hour
 
-    time_now = datetime.now().hour
+        if time_now >= time_sunset or time_now <= time_sunrise:
+            return True
 
-    if time_now >= sunset or time_now <= sunrise:
-        return True
     return False
-
 # while True:
 #     time.sleep(60)
 #     if is_iss_overheard() and is_night():

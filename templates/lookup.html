@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div class="msg">{{ message }}</div>
+
+    <div class="flex_center">
+        <form action = "{{ url_for('user_homepage') }}" method = 'POST'>
+            <button type ='submit' class = 'btn'>Back</button>
+        </form>
+    </div>
+  
+   
+{% endblock %}

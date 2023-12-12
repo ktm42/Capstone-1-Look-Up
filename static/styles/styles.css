@@ -23,6 +23,18 @@ h1 {
     text-align: center;
 }
 
+h3 {
+    color: rgb(60, 65, 92);
+    font-family: Nulshock;
+    font-size: 25px;
+}
+
+h4 {
+    color: rgb(60, 65, 92);
+    font-family: Nulshock;
+    font-size: 15px;
+}
+
 .display-1 {
     font-family: Nulshock;
     color: rgb(60, 65, 92);
@@ -32,7 +44,7 @@ h1 {
 
 .lead {
     font-family: Nulshock;
-    font-size: 25px;
+    font-size: 30px;
     color: rgb(48, 27, 63);
     text-align: center;
 }
@@ -45,5 +57,37 @@ h1 {
 
 .btn {
     font-family: Nulshock;
-    color: rgb(60, 65, 92)
+    background-color: rgb(60, 65, 92);
+    color: rgb(222, 218, 218);
+    border-radius: 3px
+}
+
+.btn:hover {
+    background-color: rgb(48, 27, 63);
+    transition: 0.5s;
+}
+
+.btn:focus {
+    outline-color: transparent;
+    outline-style: solid;
+    box-shadow: 0 0 0 5px rgb(48, 27, 63);
+    transition: 0.5s;
+}
+
+.btn:active {
+    background-color: rgb(48, 27, 63);
+}
+
+.msg {
+    font-family: Nulshock;
+    color: rgb(60, 65, 92);
+    font-size: 75px;
+    width: 100%;
+    text-align: center;
+}
+
+.flex_center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
