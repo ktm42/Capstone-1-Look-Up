@@ -66,7 +66,7 @@ class Coordinates(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     latitude = db.Column(db.Float, nullable = False)
     longitude = db.Column(db.Float, nullable = False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='cascade'), nullable = False)
     user = db.relationship('User', backref = 'coordinates')
 
     @classmethod

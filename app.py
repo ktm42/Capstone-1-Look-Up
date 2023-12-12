@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, redirect, url_for, session, flash, g
+from flask import Flask, render_template, redirect, url_for, session, request, flash, g
 from forms import LoginForm, RegForm, AddAddressForm, EditUserForm
 from main import find_coords, is_iss_overhead
 from models import db, connect_db, bcrypt, Register, User, Coordinates
@@ -129,7 +129,7 @@ def logout():
     do_logout()
 
     flash(f'Logout successful')
-    return redirect('/login')
+    return redirect('/')
 
 @app.route('/user', methods=['GET', 'POST'])
 def user_homepage():
@@ -204,16 +204,31 @@ def delete_user():
         flash('Unauthorized access')
         return redirect('/')
 
+    do_logout()
+
     db.session.delete(g.user)
     db.session.commit()
 
-    do_logout()
     return redirect('/register')
 
-@app.route('/addresses/delete')
-def delete_address():
+@app.route('/delete_address/<int:coordinates_id>', methods=['POST'])
+def delete_address(coordinates_id):
     """Allows a user to delete an address from their list"""
+    
+    if not g.user:
+        flash('Unauthorized access')
+        return redirect('/')
 
+    address = Coordinates.query.get_or_404(coordinates_id)
+
+    if address.user_id != g.user.id:
+        flash(f'Action not authorized')
+        return redirect('/user')
+
+    db.session.delete(address)
+    db.session.commit()
+
+    return redirect('/user')
 
 @app.route('/location', methods=['GET', 'POST'])
 def go_outside():

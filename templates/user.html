@@ -8,10 +8,14 @@
         <h3>Your Addresses</h3>
         <ul class = 'addresses'>
             {% for address in user_addresses %}
-                <li>{{ address.latitude }}, {{ address.longitude }}</li>
-                <form action = "{{ url_for('go_outside') }}" method = 'POST'>
+                <li class="coords">{{ address.latitude }}, {{ address.longitude }}
+                <form action = "{{ url_for('go_outside') }}" method = 'POST' style ='display: inline;'>
                     <button type ='submit' class = 'btn'>Look UP?</button>
                 </form>
+                </li>
+                <form action = "{{ url_for('delete_address', coordinates_id = address.id) }}" method = 'POST'>                 
+                    <button type = 'submit' class='btn2'>Delete</button> 
+                </form> 
             {% endfor %}
         </ul>
     </div>
@@ -20,7 +24,7 @@
     <h4>Add Address</h4>  
         <form action = "{{ url_for('add_address') }}" method = 'POST'>
             <button type = 'submit' class='btn'>Add</button> 
-        </form>   
+        </form> 
     </div>
 
     <div>
