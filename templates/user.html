@@ -4,7 +4,11 @@
     <h1 class = 'display-1'>Hey there!</h1>
     <p class = 'lead'>{{ g.user.username }}</p>
 
-    <div>
+    {% if error %}
+        <p class=error><strong>Error:</strong> {{ error }}
+    {% endif %}
+       
+    <div style="margin-bottom: 60px;">
         <h3>Your Addresses</h3>
         <ul class = 'addresses'>
             {% for address in user_addresses %}
@@ -19,11 +23,11 @@
             {% endfor %}
         </ul>
     </div>
-
-    <div>
+    
+    <div style="margin-top: 30px;">
     <h4>Add Address</h4>  
         <form action = "{{ url_for('add_address') }}" method = 'POST'>
-            <button type = 'submit' class='btn'>Add</button> 
+            <button type = 'submit' class='btn' style="display: inline;">Add</button> 
         </form> 
     </div>
 

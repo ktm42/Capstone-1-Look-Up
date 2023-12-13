@@ -4,6 +4,10 @@
     <h1 class = 'display-1'>Create Account</h1>
     <p class = 'lead'>Sign up below to know when to turn your gaze skyward</p>
 
+    {% if error %}
+        <p class=error><strong>Error:</strong> {{ error }}
+    {% endif %} 
+
     <form name = 'register' method = 'POST' action = '/register'>
         <div class = 'form_container'>
             {{ form.hidden_tag() }}
@@ -17,16 +21,6 @@
                 {% endfor %}
             </p>
             {% endfor %}
-
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul class = 'flashes'>
-                    {% for message in messages %}
-                        <li>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}        
-        {% endwith %}
         </div>
     </form>
 {% endblock %}

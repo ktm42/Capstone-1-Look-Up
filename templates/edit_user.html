@@ -3,6 +3,10 @@
 
     <p class = 'lead'>{{ g.user.username }}, please make edits below</p>
 
+    {% if error %}
+        <p class=error><strong>Error:</strong> {{ error }}
+    {% endif %}
+
     <div>
     <h4>Edit Profile</h4>
         <form name = "edit_user" method = 'POST' action = "{{ url_for('edit_user') }}">
@@ -19,16 +23,6 @@
                     {% endfor %}
                 </p>
                 {% endfor %}
-
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        <ul class = 'flashes'>
-                            {% for message in messages %}
-                                <li>{{ message }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                {% endwith %}
             </div>
         </form>   
     </div>

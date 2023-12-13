@@ -16,7 +16,6 @@ app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "shhhdonttell")
 
-#this is not in app.py in the twitter clone example
 bcrypt.init_app(app) 
 
 connect_db(app)
@@ -28,7 +27,6 @@ with app.app_context():
     db.create_all()
 
 CURR_USER_KEY = 'user_id'
-#CURR_USER_KEY = 'curr_user'
 
 @app.before_request
 def add_user_to_g():
@@ -51,10 +49,9 @@ def do_logout():
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
-
 @app.route('/')
 def home():
-    return render_template('base.html')
+    return render_template('index.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -62,32 +59,26 @@ def register():
     
     global MY_LAT, MY_LON
 
+    error = None
+
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
     form = RegForm()
        
     if form.validate_on_submit():
-        print('Form is valid')
-
         try:
-            print('Before adding user to db')
-
             user = Register.register(
-                first_name = form.first_name.data,
-                last_name = form.last_name.data,
-                address = form.username.data,
-                username = form.username.data,
-                password = form.password.data,                
-            ) 
+            first_name = form.first_name.data,
+            last_name = form.last_name.data,
+            address = form.username.data,
+            username = form.username.data,
+            password = form.password.data,                
+        ) 
 
-            print('User:', user)
             db.session.add(user)
             db.session.commit()
-        
-            flash('Success! Please log in.')
-
-            print('Before redirect to login')
+    
             do_login(user)
 
             find_coords(form.address.data, user)
@@ -95,13 +86,9 @@ def register():
             return redirect('/user')
     
         except IntegrityError as e:
-            flash(f'Username taken, please try another')
-
-            print('Retrun the registration form on IntegrityError')
-            return render_template('register.html', form=form)
-
+            error = 'Username taken, please try another'
+            return render_template('register.html', form=form, error=error)
     else:
-        print(form.errors)
         return render_template('register.html', form=form)
       
 @app.route('/login', methods=['GET', 'POST'])
@@ -110,6 +97,8 @@ def login():
 
     form = LoginForm()
 
+    error = None
+
     if form.validate_on_submit():
         user = User.authenticate(form.username.data, form.password.data)
         
@@ -117,10 +106,9 @@ def login():
             do_login(user)
             return redirect('/user')
         else:
-            flash(f'Invalid username/password. Please try again.')
-            print(form.errors)
-    
-    return render_template('login.html', form=form)
+            error = 'Invalid username/password. Please try again.'
+              
+    return render_template('login.html', form=form, error=error)
 
 @app.route('/logout')
 def logout():
@@ -135,17 +123,18 @@ def logout():
 def user_homepage():
     """Shows user list of addresses and buttons to complete other tasks"""
 
+    error = None
+
     if not g.user:
-        flash(f'Unauthorized Access')
+        error = 'Unauthorized Access'
         return redirect('/')
 
     else:
         user_addresses = Coordinates.query.filter_by(user_id=g.user.id).all()
 
     form = AddAddressForm()
-
     
-    return render_template('user.html', form=form, user_addresses=user_addresses)
+    return render_template('user.html', form=form, user_addresses=user_addresses, error=error)
 
 @app.route('/add_address', methods=['GET', 'POST'])
 def add_address():
@@ -153,10 +142,12 @@ def add_address():
 
     global MY_LAT, MY_LON
 
+    error = None
+
     form = AddAddressForm()
 
     if not g.user:
-        flash('Unauthorized access')
+        error = 'Unauthorized access'
         return redirect('/user')
 
     if form.validate_on_submit():
@@ -164,11 +155,11 @@ def add_address():
         
         find_coords(form.address.data, g.user)
 
-        flash('Address added successfully!')
+        flash('Address added!')
         return redirect('/user')
 
-    flash('Invalid form submission')
-    return render_template('add_address.html', form=form, user_addresses=g.user.coordinates)
+    error = 'Invalid form submission'
+    return render_template('add_address.html', form=form, user_addresses=g.user.coordinates, error=error)
 
 @app.route('/edit', methods=['GET', 'POST'])
 def edit_user():
@@ -176,11 +167,11 @@ def edit_user():
 
     form = EditUserForm(obj=g.user)
 
-    if not g.user:
-        flash('Access unauthorsized')
-        return redirect('/user')
+    error = None
 
-    # user = g.user
+    if not g.user:
+        error = 'Access unauthorsized'
+        return redirect('/user')
 
     if form.validate_on_submit():
         if User.authenticate(g.user.username, form.password.data):
@@ -192,16 +183,17 @@ def edit_user():
             return redirect('/user')
 
         else:
-            flash(f'Incorrect password')
+            error = 'Incorrect password'
 
-    return render_template('edit_user.html', form=form)
+    return render_template('edit_user.html', form=form, error=error)
 
 @app.route('/delete', methods=['POST'])
 def delete_user():
     """Deletes the user"""
+    error = None
 
     if not g.user:
-        flash('Unauthorized access')
+        error = 'Unauthorized access'
         return redirect('/')
 
     do_logout()
@@ -209,33 +201,36 @@ def delete_user():
     db.session.delete(g.user)
     db.session.commit()
 
-    return redirect('/register')
+    return redirect('/register', error=error)
 
 @app.route('/delete_address/<int:coordinates_id>', methods=['POST'])
 def delete_address(coordinates_id):
     """Allows a user to delete an address from their list"""
     
+    error = None
+
     if not g.user:
-        flash('Unauthorized access')
+        error = 'Unauthorized access'
         return redirect('/')
 
     address = Coordinates.query.get_or_404(coordinates_id)
 
     if address.user_id != g.user.id:
-        flash(f'Action not authorized')
+        error = 'Action not authorized'
         return redirect('/user')
 
     db.session.delete(address)
     db.session.commit()
 
-    return redirect('/user')
+    return redirect('/user', error=error)
 
 @app.route('/location', methods=['GET', 'POST'])
 def go_outside():
     """pull coordinates from db and check if user should go outside and look up"""
+    error = None
 
     if not g.user:
-        flash('Unauthorized access')
+        error = 'Unauthorized access'
         return redirect('/user')
 
     user_addresses = Coordinates.query.filter_by(user_id=g.user.id).all()
@@ -250,4 +245,4 @@ def go_outside():
     if response != True:
         message = 'Stay inside'
 
-    return render_template('lookup.html', message=message)
+    return render_template('lookup.html', message=message, error=error)

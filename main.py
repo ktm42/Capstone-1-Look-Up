@@ -24,10 +24,7 @@ def find_coords(address, user):
 
     MY_LAT = float(data[0]['lat'])
     MY_LON = float(data[0]['lon'])
-
-    print('find_coords executed successfully!')
-    print(MY_LAT, MY_LON)
-     
+        
     coordinates = Coordinates.log_coords(
         latitude=MY_LAT,
         longitude= MY_LON,

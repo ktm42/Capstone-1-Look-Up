@@ -27,12 +27,15 @@ h3 {
     color: rgb(60, 65, 92);
     font-family: Nulshock;
     font-size: 25px;
+    margin-bottom: 0%;
 }
 
 h4 {
     color: rgb(60, 65, 92);
     font-family: Nulshock;
     font-size: 15px;
+    margin-bottom: 0;
+
 }
 
 .display-1 {
@@ -65,7 +68,7 @@ h4 {
     font-family: Nulshock;
     background-color: rgb(60, 65, 92);
     color: rgb(222, 218, 218);
-    border-radius: 3px
+    border-radius: 3px;
 }
 
 .btn:hover {
@@ -120,4 +123,14 @@ h4 {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.flashes {
+    font-size: large;
+    color: darkgreen;
+}
+
+.error {
+    font-size: large;
+    color: darkred;
 }

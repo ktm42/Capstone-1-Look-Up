@@ -3,6 +3,10 @@
 
     <p class = 'lead'>Enter as many addresses as you'd like</p>
 
+    {% if error %}
+        <p class=error><strong>Error:</strong> {{ error }}
+    {% endif %}
+
     <div>
     <h4>Add Address</h4>
         <form name = 'add_address' method = 'POST' action = "{{ url_for('add_address') }}">
@@ -19,16 +23,6 @@
                     {% endfor %}
                 </p>
                 {% endfor %}
-
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        <ul class = 'flashes'>
-                            {% for message in messages %}
-                                <li>{{ message }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                {% endwith %}
             </div>
         </form>
     </div>
