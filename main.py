@@ -28,7 +28,7 @@ def find_coords(address, user):
     coordinates = Coordinates.log_coords(
         latitude=MY_LAT,
         longitude= MY_LON,
-        user=user
+        user=user,
     )
 
 def is_iss_overhead(lat, lon):
