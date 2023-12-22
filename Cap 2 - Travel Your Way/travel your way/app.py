@@ -1,8 +1,9 @@
 import os
 
 from flask import Flask, render_template, redirect, url_for, session, request, flash, g, jsonify
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
-from forms import LoginForm, RegForm, AddDestinationForm, EditUserForm
+from forms import LoginForm, RegForm, AddDestinationForm, EditProfileForm
 from flight_search import FlightSearch
 from flight_data import FlightData
 from models import db, connect_db, bcrypt, User, Destination
@@ -126,93 +127,62 @@ def user_homepage():
 
     else:
         user_destinations = g.user.destinations
-
-    form = AddDestinationForm()
     
-    return render_template('user.html', form=form, user_destinations=user_destinations, error=error)
+    return render_template('user.html', user_destinations=user_destinations, error=error)
 
 @app.route('/add_destination', methods=['GET', 'POST'])
 def add_destination():
-    """Handles adding a new address"""
-
+    """Handles adding a new destination"""
+    
     error = None
-
-    form = AddDestinationForm()
 
     if not g.user:
         error = 'Unauthorized access'
         return redirect('/user')
 
-    if form.validate_on_submit():
+    form = AddDestinationForm()    
+
+    if request.method == 'POST' and form.validate_on_submit():
         new_destination = form.destination.data
         top_price = form.top_price.data
         g.user.base_city = form.base_city.data
 
-        print(f"new_destination: {new_destination}")
-        print(f"top_price: {top_price}")
-        print(f"g.user.base_city: {g.user.base_city}")
-
-
-        #Using FlightSearch class to get the destination code
+        # Using FlightSearch class to get the destination code
         flight_search = FlightSearch()
         iata_code = flight_search.iata_code(new_destination)
 
         if iata_code:
-            #use the FlightSearch class to check for flights
-            from_time = datetime.now() + timedelta(days=1)
-            to_time = from_time + timedelta(days=7) #Adjust days is needed
+            try:
+                # Save the destination and flight data to the database
+                new_destination = Destination(
+                    destination=new_destination,
+                    iata_code=iata_code,
+                    top_price=top_price,
+                    user=g.user
+                )
 
-            flight_data = flight_search.check_flights(
-                base_city = g.user.base_city,
-                iata_code = iata_code,
-                from_time = from_time,
-                to_time = to_time
-            )
-            print(f'Destination created: {new_destination}')
+                db.session.add(new_destination)
+                db.session.commit()
+                flash('Destination added!')
+                return redirect('/user')  # Redirect to the user homepage after adding destination
 
-            if flight_data:
-                try:
-                    # Save the destination and flight data to the database
-                    new_destination = Destination(
-                        destination=new_destination,
-                        iata_code=iata_code,
-                        top_price=top_price,
-                        user=g.user
-                    )
+            except Exception as e:
+                print(f"Error during database commit: {e}")
+                db.session.rollback()  # Rollback changes in case of an IntegrityError
+                error = 'Error during database commit'
 
-                    db.session.add(new_destination)
-                    db.session.commit()
-                    print(f'Database commit successful')
+        else:
+            print(f"Form errors: {form.errors}")
+            print(f"CSRF Token: {form.csrf_token.data}")
+            error = 'Invalid form submission'
 
-                    # Use FlightData class to create an instance
-                    flight_instance = FlightData(
-                        price=flight_data.price,
-                        base_city=flight_data.base_city,
-                        origin_airport=flight_data.origin_airport,
-                        destination_city=flight_data.destination_city,
-                        destination_airport=flight_data.destination_airport,
-                        out_date=flight_data.out_date,
-                        return_date=flight_data.return_date
-                    )
-
-                    flash('Destination added!')
-                    return redirect('/user')  # Redirect to the user homepage after adding destination
-
-                except Exception as e:
-                    print(f"Error during database commit: {e}")
-                    db.session.rollback()  # Rollback changes in case of an IntegrityError
-                    error = 'Error during databse commit'
-                    
-
-
-    error = 'Invalid form submission'
     return render_template('add_destination.html', form=form, user_destinations=g.user.destinations, error=error)
 
 @app.route('/edit', methods=['GET', 'POST'])
 def edit_profile():
     """Update user profile"""
 
-    form = EditUserForm(obj=g.user)
+    form = EditProfileForm(obj=g.user)
 
     error = None
 
@@ -221,18 +191,13 @@ def edit_profile():
         return redirect('/user')
 
     if form.validate_on_submit():
-        if User.authenticate(g.user.username, form.password.data):
             g.user.username = form.username.data
             g.user.password = form.password.data
-            g.user.address = form.address.data
-
+        
             db.session.commit()
             return redirect('/user')
-
-        else:
-            error = 'Incorrect password'
-
-    return render_template('edit_user.html', form=form, error=error)
+        
+    return render_template('edit_profile.html', form=form, error=error)
 
 @app.route('/delete', methods=['POST'])
 def delete_user():
@@ -248,7 +213,8 @@ def delete_user():
     db.session.delete(g.user)
     db.session.commit()
 
-    return redirect('/register', error=error)
+    flash('Seccessfully deleted')
+    return redirect('/register')
 
 @app.route('/delete_destination/<int:destination_id>', methods=['POST'])
 def delete_destination(destination_id):
@@ -260,7 +226,7 @@ def delete_destination(destination_id):
         error = 'Unauthorized access'
         return redirect('/')
 
-    destination = Destinations.query.get_or_404(destination_id)
+    destination = Destination.query.get_or_404(destination_id)
 
     if destination.user_id != g.user.id:
         error = 'Action not authorized'
@@ -269,6 +235,6 @@ def delete_destination(destination_id):
     db.session.delete(destination)
     db.session.commit()
 
-    return redirect('/user', error=error)
+    return redirect('/user')
 
    

@@ -15,9 +15,17 @@ class FlightSearch:
         headers = {"apikey": TEQUILA_API_KEY}
         query = {"term": city_name, "location_types": "city"}
         response = requests.get(url=location_endpoint, headers=headers, params=query)
-        results = response.json()["locations"]
-        code = results[0]["code"]
-        return code
+
+        try:
+            results = response.json()["locations"]
+            if results: 
+                code = results[0]["code"]
+                return code
+            else:
+                return None
+        except KeyError as e:
+            print(f"Unexpected response format. {e}. Response: {response.content.decode('utf-8')}")
+            return None   
 
     def check_flights(self, base_city, iata_code, from_time, to_time):
         headers = {"apikey": TEQUILA_API_KEY}
@@ -59,8 +67,3 @@ class FlightSearch:
         except KeyError as e:
             response_text = response.content.decode('utf-8')
             print(f"Unexpected response format. {e}. Response: {response_text}")
-
-        
-            
-        
-

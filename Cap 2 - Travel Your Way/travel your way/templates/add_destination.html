@@ -4,11 +4,11 @@
     <p class = 'lead'>Where would you like to go?</p>
 
     {% if error %}
-        <p class=error><strong>Error:</strong> {{ error }}
+        <p class=error><strong>Error:</strong> {{ error }} </p>
     {% endif %}
 
     <div>
-    <h4>Add Address</h4>
+    <h4>Add Destination</h4>
         <form name = 'add_destination' method = 'POST' action = "{{ url_for('add_destination') }}">
             <div class ='form_container'>
                 {{ form.hidden_tag() }}

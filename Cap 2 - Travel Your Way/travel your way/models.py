@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 
 db = SQLAlchemy()
-bcrypt = Bcrypt ()
+bcrypt = Bcrypt()
 
 def connect_db(app):
     """Connects to database"""
@@ -38,17 +38,15 @@ class User(db.Model):
         """Validates user exists and password is correct. Returns user if valid; else returns false"""
 
         u = cls.query.filter_by(username=username).first()
+
         if u:
-            print(f'Stored hashed password: {user.password}')
-            if bcrypt.check_password_hash(user.password, password):
-                print("Authentication successful")
-                return user
+            if bcrypt.check_password_hash(u.password, password):
+                return u
             else:
-                print("Password does not match")
+                print('Password does not match')
         else:
             print('User not found')
-        return False 
-   
+        return False
 
 class Destination(db.Model):
     __tablename__='destinations'

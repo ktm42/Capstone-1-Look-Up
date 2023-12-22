@@ -24,8 +24,8 @@ class AddDestinationForm(FlaskForm):
     top_price = IntegerField('Top Price', validators=[InputRequired()])
     submit = SubmitField('Add')
 
-class EditUserForm(FlaskForm):
+class EditProfileForm(FlaskForm):
     """Form user can edit profile"""
-    username = StringField('Username', validators=[InputRequired()])
-    password = PasswordField('Password', validators=[InputRequired()])
+    username = StringField('Update username', validators=[InputRequired()])
+    password = PasswordField('Update password', validators=[InputRequired()])
     submit = SubmitField('Edit')
