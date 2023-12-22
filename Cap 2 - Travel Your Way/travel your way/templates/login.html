@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <p class = 'lead'>Log in to edit your travel destinations and top price</p>
+
+    {% if error %}
+        <p class=error><strong>Error:</strong> {{ error }}
+    {% endif %}
+
+    <form name = 'login' method = 'POST' action = '/login'>
+        <div class ='form_container'>
+            {{ form.hidden_tag() }}
+            {% for field in form
+            if field.widget.input_type != 'hidden' %}
+            <p>
+                {{ field.label(class_ = 'form_label') }}
+                {{ field(class_ = 'form_field') }}
+
+                {% for error in field.errors %}
+                    <span class = 'form_error'>{{ error }}</span>
+                {% endfor %}
+            </p>
+            {% endfor %}
+        </div>
+    </form>
+{% endblock %}

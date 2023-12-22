@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <p class = 'lead'>Where would you like to go?</p>
+
+    {% if error %}
+        <p class=error><strong>Error:</strong> {{ error }}
+    {% endif %}
+
+    <div>
+    <h4>Add Address</h4>
+        <form name = 'add_destination' method = 'POST' action = "{{ url_for('add_destination') }}">
+            <div class ='form_container'>
+                {{ form.hidden_tag() }}
+                {% for field in form
+                if field.widget.input_type != 'hidden' %}
+                <p>
+                    {{ field.label(class_ = 'form_label') }}
+                    {{ field(class_ = 'form_field') }}
+
+                    {% for error in field.errors %}
+                        <span class = 'form_error'>{{ error }}</span>
+                    {% endfor %}
+                </p>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+{% endblock %}

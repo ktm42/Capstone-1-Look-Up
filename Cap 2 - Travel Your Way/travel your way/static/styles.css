@@ -1,0 +1,136 @@
+nav {
+    color: black;
+    font-family: helvetica;
+    text-align: left;
+}
+
+#image {
+    background-image: url(https://images.pexels.com/photos/163185/old-retro-antique-vintage-163185.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2-163185/);
+    border: 1px solid black;
+    height: 600px;
+    background-size: cover;
+    background-position: center; 
+}
+
+body {
+    background-color: rgb(222, 218, 218);
+}
+
+h1 {
+    color: rgb(180, 165, 165);
+    font-family: helvetica;
+    font-size: 75px;
+    text-align: center;
+}
+
+h3 {
+    color: rgb(60, 65, 92);
+    font-family: Arial;
+    font-size: 25px;
+    margin-bottom: 0%;
+}
+
+h4 {
+    color: rgb(60, 65, 92);
+    font-family: Arial;
+    font-size: 15px;
+    margin-bottom: 0;
+
+}
+
+.display-1 {
+    font-family: helvetica;
+    color: rgb(60, 65, 92);
+    font-size: 50px;
+    text-align: center;
+}
+
+.lead {
+    font-family: helvetica;
+    font-size: 30px;
+    color: rgb(48, 27, 63);
+    text-align: center;
+}
+
+.form_label {
+    font-size: 15px;
+    font-family: arial;
+    color: rgb(48, 27, 63)
+}
+
+.coords {
+    font-size: 20px;
+    font-family: Nulshock;
+    color: black;
+}
+
+.btn {
+    font-family: arial;
+    background-color: rgb(60, 65, 92);
+    color: rgb(222, 218, 218);
+    border-radius: 3px;
+}
+
+.btn:hover {
+    background-color: rgb(48, 27, 63);
+    transition: 0.5s;
+}
+
+.btn:focus {
+    outline-color: transparent;
+    outline-style: solid;
+    box-shadow: 0 0 0 5px rgb(48, 27, 63);
+    transition: 0.5s;
+}
+
+.btn:active {
+    background-color: rgb(48, 27, 63);
+}
+
+.btn2 {
+    font-family: Arial;
+    font-size: 10px;
+    background-color: rgb(60, 65, 92);
+    color: rgb(222, 218, 218);
+    border-radius: 50%;
+}
+
+.btn2:hover {
+    background-color: rgb(48, 27, 63);
+    transition: 0.5s;
+}
+
+.btn2:focus {
+    outline-color: transparent;
+    outline-style: solid;
+    box-shadow: 0 0 0 5px rgb(48, 27, 63);
+    transition: 0.5s;
+}
+
+.btn2:active {
+    background-color: rgb(48, 27, 63);
+}
+
+.msg {
+    font-family: helvetica;
+    color: rgb(60, 65, 92);
+    font-size: 75px;
+    width: 100%;
+    text-align: center;
+}
+
+.flex_center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flashes {
+    font-size: large;
+    color: darkgreen;
+}
+
+.error {
+    font-size: large;
+    color: darkred;
+}
