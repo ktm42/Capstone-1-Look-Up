@@ -59,7 +59,7 @@ class Destination(db.Model):
     user = db.relationship('User', backref = 'destinations')
 
     @classmethod
-    def add_destinations(cls, destination, iata_code, price, user):
+    def add_destinations(cls, destination_name, iata_code, price, user):
         new_destination = cls(
             destination = destination_name,
             top_price = price,
@@ -69,3 +69,5 @@ class Destination(db.Model):
 
         db.session.add(new_destination)
         db.session.commit()
+
+        return new_destination

@@ -213,7 +213,7 @@ def delete_user():
     db.session.delete(g.user)
     db.session.commit()
 
-    flash('Seccessfully deleted')
+    flash('Successfully deleted')
     return redirect('/register')
 
 @app.route('/delete_destination/<int:destination_id>', methods=['POST'])

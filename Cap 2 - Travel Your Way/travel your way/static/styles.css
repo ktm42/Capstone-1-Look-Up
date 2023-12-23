@@ -1,19 +1,12 @@
+body {
+    background: url(https://images.pexels.com/photos/163185/old-retro-antique-vintage-163185.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2-163185/) no-repeat center center fixed;
+    background-size: cover;
+}
+
 nav {
     color: black;
     font-family: helvetica;
     text-align: left;
-}
-
-#image {
-    background-image: url(https://images.pexels.com/photos/163185/old-retro-antique-vintage-163185.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2-163185/);
-    border: 1px solid black;
-    height: 600px;
-    background-size: cover;
-    background-position: center; 
-}
-
-body {
-    background-color: rgb(222, 218, 218);
 }
 
 h1 {

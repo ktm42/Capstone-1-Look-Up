@@ -1,44 +1,31 @@
-class NotificationManager:
-    #This class is responsible for sending notifications with the deal flight details.
-    pass
+#Simulates sending a notification message that one could receive from Twilio, OneSignal, or another service if this app were in production
 
-    if flight_data:
-        try:
-            # Save the destination and flight data to the database
-            new_destination = Destination(
-                destination=new_destination,
-                iata_code=iata_code,
-                top_price=top_price,
-                user=g.user
-            )
-            print(f'Before database commit')
-            db.session.add(new_destination)
-            db.session.commit()
-            print(f'Database commit successful')
 
-            # Use FlightData class to create an instance
-            flight_instance = FlightData(
-                price=flight_data.price,
-                base_city=flight_data.base_city,
-                origin_airport=flight_data.origin_airport,
-                destination_city=flight_data.destination_city,
-                destination_airport=flight_data.destination_airport,
-                out_date=flight_data.out_date,
-                return_date=flight_data.return_date
-            )
+def simulate_notification(message):
+    print(f"Simulated Notification: {message}")
 
-            print(f'After database commit')
-            flash('Destination added!')
-            return redirect('/user')  # Redirect to the user homepage after adding destination
-            print('Redirectin to user homepage')
 
-        except Exception as e:
-            print(f"Error during database commit: {e}")
-            db.session.rollback()  # Rollback changes in case of an IntegrityError
-            error = 'Error during databse commit'          
-        else:
-            print('Flight data is None')   
-    else:
-        print(f"Form errors: {form.errors}")
-        print(f"CSRF Token: {form.csrf_token.data}")
-        error = 'Invalid form submission'
+
+# if using twilio, this would look something like this:
+
+# from twilio.rest import Client
+
+# TWILIO_SID = YOUR TWILIO ACCOUNT SID
+# TWILIO_AUTH_TOKEN = YOUR TWILIO AUTH TOKEN
+# TWILIO_VIRTUAL_NUMBER = YOUR TWILIO VIRTUAL NUMBER
+# TWILIO_VERIFIED_NUMBER = YOUR TWILIO VERIFIED NUMBER
+
+
+# class NotificationManager:
+
+#     def __init__(self):
+#         self.client = Client(TWILIO_SID,TWILIO_AUTH_TOKEN)
+
+#     def send_sms(self, message):
+#         message = self.client.messages.create(
+#             body=message,
+#             from_=TWILIO_VIRTUAL_NUMBER,
+#             to=TWILIO_VERIFIED_NUMBER,
+#         )
+#         # Prints if successfully sent.
+#         print(message.sid)

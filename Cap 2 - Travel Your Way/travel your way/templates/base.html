@@ -7,23 +7,23 @@
     <link rel="stylesheet" type="text/css" href="../static/styles.css">
 </head>
 <body>
-    <div id = 'image'>   
-        <nav class = 'menu'>   
-            <ul class = 'links'>
-                {% if session['user_id'] %}
-                    <li>
-                        <a href = '/logout'>Log out</a>
-                    </li>
-                    {% else %}
-                    <li>
-                        <a href = '/login'>Login</a>
-                    </li>
-                    <li>
-                        <a href = '/register'>Create Account</a>
-                    </li>
-                {% endif %}
-            </ul>   
-        </nav>  
+    
+    <nav class = 'menu'>   
+        <ul class = 'links'>
+            {% if session['user_id'] %}
+                <li>
+                    <a href = '/logout'>Log out</a>
+                </li>
+                {% else %}
+                <li>
+                    <a href = '/login'>Login</a>
+                </li>
+                <li>
+                    <a href = '/register'>Create Account</a>
+                </li>
+            {% endif %}
+        </ul>   
+    </nav>  
         <div>
             <h1>Travel Your Way</h1>
         </div>  
