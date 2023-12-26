@@ -1,46 +1,50 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <p class = 'lead'>Hello {{ g.user.username }}</p>
+    <div classs = "user_main_container">
+        <p class = 'lead'>Hello {{ g.user.username }}</p>
 
-    {% if error %}
-        <p class=error><strong>Error:</strong> {{ error }}
-    {% endif %}
-       
-    <div style="margin-bottom: 60px;">
-        <h3>Your Destinations</h3>
-        <ul class = 'destinations'>
-            {% for destination in user_destinations %}
-                <li class="destinations">
-                    Destination: {{ destination.destination }}
-                    Top Price: {{ destination.top_price }}
-                
-                    <form action = "{{ url_for('delete_destination', destination_id=destination.id) }}" method = 'POST'>                 
-                        <button type = 'submit' class='btn2'>Delete</button> 
-                    </form> 
-                 </li>
-            {% endfor %}
-        </ul>
-    </div>
+        {% if error %}
+            <p class=error><strong>Error:</strong> {{ error }}
+        {% endif %}
+        
+        <div style="margin-bottom: 60px;">
+            <h3>Your Destinations</h3>
+            <ul class = 'destinations'>
+                {% for destination in user_destinations %}
+                    <li class="destinations">
+                        Destination: {{ destination.destination }}
+                        Top Price: {{ destination.top_price }}
+                    
+                        <form action = "{{ url_for('delete_destination', destination_id=destination.id) }}" method = 'POST'>                 
+                            <button type = 'submit' class='btn2'>Delete</button> 
+                        </form> 
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     
-    <div style="margin-top: 30px;">
-    <h4>Add Destination</h4>  
-        <form action = "{{ url_for('add_destination') }}" method = 'POST'>
-            <button type = 'submit' class='btn' style="display: inline;">Add</button> 
-        </form> 
-    </div>
+    
+        <div style="margin-top: 30px;">
+        <h4>Add Destination</h4>  
+            <form action = "{{ url_for('add_destination') }}" method = 'POST'>
+                <button type = 'submit' class='btn' style="display: inline;">Add</button> 
+            </form> 
+        </div>
 
-    <div>
-    <h4>Edit Profile</h4>
-        <form action = "{{ url_for('edit_profile') }}" method = 'POST'>
-            <button type = 'submit' class ='btn'>Edit</button>
-        </form>
-    </div>
-
-    <div>
-        <h4>Delete Profile</h4>
-            <form action = "{{ url_for('delete_user') }}" method = 'POST'>
-                <button type = 'submit' class ='btn'>Delete Me</button>
+        <div>
+        <h4>Edit Profile</h4>
+            <form action = "{{ url_for('edit_profile') }}" method = 'POST'>
+                <button type = 'submit' class ='btn'>Edit</button>
             </form>
         </div>
+
+        <div>
+            <h4>Delete Profile</h4>
+                <form action = "{{ url_for('delete_user') }}" method = 'POST'>
+                    <button type = 'submit' class ='btn'>Delete Me</button>
+                </form>
+        </div>
+    </div>
+    
 {% endblock %}

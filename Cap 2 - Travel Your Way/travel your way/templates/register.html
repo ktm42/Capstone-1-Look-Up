@@ -1,26 +1,28 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <h1 class = 'display-1'>Get Started</h1>
+    <div class = "main_container">
+        <h1 class = 'display-1'>Get Started</h1>
 
-    {% if error %}
-        <p class=error><strong>Error:</strong> {{ error }} </p>
-    {% endif %} 
+        {% if error %}
+            <p class=error><strong>Error:</strong> {{ error }} </p>
+        {% endif %} 
 
-    <form name = 'register' method = 'POST' action = '/register'>
-        <div class = 'form_container'>
-            {{ form.hidden_tag() }}
-            {% for field in form
-            if field.widget.input_type != 'hidden' %}
-            <p>
-                {{ field.label(class_ = 'form_label') }}
-                {{ field(class_ = 'form_field') }}
-                
-                {% for error in field.errors %}
-                    <span class = 'form_error'>{{ error }}</span>
+        <form name = 'register' method = 'POST' action = '/register'>
+            <div class = 'form_container'>
+                {{ form.hidden_tag() }}
+                {% for field in form
+                if field.widget.input_type != 'hidden' %}
+                <p>
+                    {{ field.label(class_ = 'form_label') }}
+                    {{ field(class_ = 'form_field') }}
+                    
+                    {% for error in field.errors %}
+                        <span class = 'form_error'>{{ error }}</span>
+                    {% endfor %}
+                </p>
                 {% endfor %}
-            </p>
-            {% endfor %}
-        </div>
-    </form>
+            </div>
+        </form>
+    </div>    
 {% endblock %}
